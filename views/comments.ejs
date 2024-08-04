@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comments</title>
+</head>
+
+<body>
+    <h1>Your Comments and Answers on your Posts Will Be Displayed Here</h1>
+    <% if (locals.com) { %>
+        <% for( let i=0; i < com.length; i++ ) { %>
+            <h2>Title:<%=com[i].post.title  %> </h2>
+            <h3>Comment:<%=com[i].cmt  %></h3>
+            <h3>User:<%=com[i].user.uname  %></h3>
+            <% } %>
+                <% } %>
+
+</body>
+
+</html>

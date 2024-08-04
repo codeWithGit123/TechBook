@@ -1,0 +1,32 @@
+*{
+    text-decoration: none;
+
+}
+.navbar{
+    background:lightblue;
+    font-family:  Calibri;
+    padding-right: 15px;
+    padding-left: 15px;
+
+}
+.navdiv{
+    display:flex;
+    align-items: center;
+}
+
+
+
+li{
+    list-style: none;display:inline-block;
+}
+li a{
+    color:white;font-size: 20px; margin-right: 20px;
+
+}
+button{
+    background: rgb(42, 13, 186);margin-right: 10px;
+    border-radius: 10px;
+    padding:10px;
+    width: 70px;
+
+}
