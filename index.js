@@ -7,7 +7,6 @@ const User = require('./models/user')
 const Post = require('./models/post')
 const Comment = require('./models/comment')
 const Question = require('./models/ques')
-const post = require('./models/post')
 require('dotenv').config()
 
 mongoose.connect(process.env.MONGO_DB_URI)
@@ -22,11 +21,6 @@ app.use(session({
     secret: 'Hello_World!',
     resave: false,
     saveUninitialized: true,
-    cookie: {
-        secure: process.env.NODE_ENV === 'production',
-        httpOnly: true,
-        maxAge: 1000 * 60 * 60 * 24
-    }
 }))
 
 
