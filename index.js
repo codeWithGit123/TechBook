@@ -114,15 +114,7 @@ app.get('/comments', isAuthenticated, async (req, res) => {
     }
 });
 
-app.post('/edit',async(req,res)=>{
-    try {
-        const posts = await Post.find({ user: req.session.user.id }); // Get posts for the logged-in user
-        res.render('posts', { r:posts });
-    } catch (error) {
-        console.error('Error fetching user posts:', error);
-        res.status(500).send("Server Error");
-    }
-})
+
 
 
 // Post Routes
