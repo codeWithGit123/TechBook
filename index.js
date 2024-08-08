@@ -57,7 +57,8 @@ app.get('/home', isAuthenticated, async (req, res) => {
     try {
         const posts = await Post.find();
         const ques = await Question.find(); // Assuming questions are not user-specific
-        console.log(posts,'\n',ques);
+        const d = new Date();
+        console.log(`User Entered At: ${d.toLocaleDateString()}-${d.toLocaleTimeString()}`);
         res.render('home', { r: posts, q: ques });
     } catch (error) {
         console.error('Error fetching posts:', error);
