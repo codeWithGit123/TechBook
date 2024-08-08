@@ -19,6 +19,7 @@ let pSchema = new mongoose.Schema({
         ref: 'User',
         required: true,
       },
+      uname:String
 },{timestamps:true})
 
 module.exports = mongoose.model('Post',pSchema);

@@ -5,15 +5,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Comments</title>
+    <link rel="shortcut icon" href="/images/favicon.jpg" type="image/x-icon">
 </head>
 
 <body>
-    <h1>Your Comments and Answers on your Posts Will Be Displayed Here</h1>
+    <h1>Your Comments on your Posts Will Be Displayed Here</h1>
     <% if (locals.com) { %>
         <% for( let i=0; i < com.length; i++ ) { %>
             <h2>Title:<%=com[i].post.title  %> </h2>
             <h3>Comment:<%=com[i].cmt  %></h3>
             <h3>User:<%=com[i].user.uname  %></h3>
+            <% } %>
+                <% } %>
+    <h1>Your Answers of your Questions Posted Will Be Displayed Here</h1>
+    <% if (locals.ans) { %>
+        <% for( let i=0; i < ans.length; i++ ) { %>
+            <h2>Title:<%=ans[i].question.topic  %> </h2>
+            <h3>Comment:<%=ans[i].ans  %></h3>
+            <h3>User:<%=ans[i].user.uname  %></h3>
             <% } %>
                 <% } %>
 

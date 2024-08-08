@@ -7,6 +7,7 @@ const User = require('./models/user')
 const Post = require('./models/post')
 const Comment = require('./models/comment')
 const Question = require('./models/ques')
+const Answer = require('./models/ans')
 require('dotenv').config()
 
 mongoose.connect(process.env.MONGO_DB_URI)
@@ -77,7 +78,7 @@ app.get('/about', (req, res) => {
 
 app.get('/posts', isAuthenticated, async (req, res) => {
     try {
-        const posts = await Post.find({ user: req.session.user.id }); // Get posts for the logged-in user
+        const posts = await Post.find({ user: req.session.user.id }) // Get posts for the logged-in user
         res.render('posts', { r:posts });
     } catch (error) {
         console.error('Error fetching user posts:', error);
@@ -98,16 +99,21 @@ app.get('/comments', isAuthenticated, async (req, res) => {
     try {
         // Find all posts created by the logged-in user
         const userPosts = await Post.find({ user: req.session.user.id }).select('_id');
+        const userQuestions = await Question.find({ user: req.session.user.id }).select('_id');
 
         // Extract post IDs
         const postIds = userPosts.map(post => post._id);
+        const quesIds = userQuestions.map(ques => ques._id);
 
         // Find comments for those posts, and populate the user and post data
         const comments = await Comment.find({ post: { $in: postIds } })
             .populate('post', 'title')  // Populate post titles
             .populate('user', 'uname'); // Populate usernames who commented
 
-        res.render('comments', { com: comments });
+        const answers = await Answer.find({question:{$in:quesIds}})
+        .populate('question','topic')
+        .populate('user','uname')
+        res.render('comments', { com: comments,ans:answers });
     } catch (error) {
         console.error('Error fetching comments:', error);
         res.status(500).send("Server Error");
@@ -190,7 +196,8 @@ app.post('/upload', isAuthenticated, upload.single('image'), async (req, res) =>
             img: image,
             desc,
             contentType: req.file.mimetype,
-            user: userId, // Reference the user who created the post
+            user: userId,
+            uname : req.session.user.uname // Reference the user who created the post
         });
 
         await post.save();
@@ -207,6 +214,8 @@ app.post('/question', isAuthenticated, async (req, res) => {
         const ques = new Question({
             topic: req.body.topic,
             question: req.body.question,
+            user:req.session.user.id,
+            uname:req.session.user.uname
         });
         await ques.save();
         req.session.msg = 'Question uploaded successfully';
@@ -232,6 +241,25 @@ app.post('/com', isAuthenticated, async (req, res) => {
         res.redirect('/home');
     } catch (error) {
         console.error('Error adding comment:', error);
+        res.status(400).send("An Error Occurred");
+    }
+});
+
+app.post('/ans', isAuthenticated, async (req, res) => {
+    const ans = req.body.answer;
+    const quesId = req.body.quesId;
+    const t = await Question.findById(quesId);
+    const u = await User.findById(req.session.user.id);
+    try {
+        const newAnswer = new Answer({
+            user: u,
+            question: t,
+            ans
+        });
+        await newAnswer.save();
+        res.redirect('/home');
+    } catch (error) {
+        console.error('Error adding answer:', error);
         res.status(400).send("An Error Occurred");
     }
 });

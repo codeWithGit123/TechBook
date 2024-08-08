@@ -117,7 +117,7 @@
           <h2>Others Posts And Questions</h2>
           <% for( let i=0; i < r.length; i++ ) { %>
             <div class="card" style="width: 18rem;">
-              <h5 class="card-title">Username</h5>
+              <h5 class="card-title">@<%= r[i].uname  %></h5>
               <img src="data:<%= r[i].contentType %>;base64,<%= r[i].img.toString(
         'base64' ) %>" alt="An Image" />
               <div class="card-body">
@@ -139,7 +139,7 @@
             <% } %>
               <% for( let i=0; i < q.length; i++ ) { %>
                 <div class="card" style="width: 18rem;">
-                  <h5 class="card-title">Username</h5>
+                  <h5 class="card-title">@<%= q[i].uname  %></h5>
                   <div class="card-body">
                     <h5 class="card-title">
                       <%= q[i].topic %>
@@ -147,12 +147,12 @@
                     <p class="card-text">
                       <%= q[i].question %>
                     </p>
-                    <form action="/com" method="post">
-                      <input type="hidden" name="postId" value="<%= r[i]._id %>"/>
+                    <form action="/ans" method="post">
+                      <input type="hidden" name="quesId" value="<%= q[i]._id %>"/>
                       <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Give an answer..." name="comment">
+                        <input type="text" class="form-control" placeholder="Give Answer..." name="answer">
                       </div>
-                      <button type="submit" class="btn btn-primary">Send</button>
+                      <input type="submit" class="btn btn-primary" value="Send">
                     </form>
                   </div>
                 </div>
