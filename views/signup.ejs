@@ -11,55 +11,68 @@
 </head>
 
 <body>
-    <div class="container">
-        <h2 class="text-center">Signup</h2>
-        <form action="/sign" method="post" onsubmit="return cmp()">
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" class="form-control" id="username" placeholder="Enter username" name="uname">
+    <% if (msg) { %>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>
+                <%= msg %>
+            </strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <% } %>
+            <div class="container">
+                <h2 class="text-center">Signup</h2>
+                <form action="/sign" method="post" onsubmit="return cmp()">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" class="form-control" id="username" placeholder="Enter username" name="uname">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" id="password" placeholder="Enter password"
+                            name="pass">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm-password">Confirm Password</label>
+                        <input type="password" class="form-control" id="confirm-password" placeholder="Confirm password"
+                            text="center" name="cpass">
+                    </div>
+                    <div class="form-group">
+                        <label for="topic">Topic of Interest</label>
+                        <select class="form-control" id="topic" name="toi">
+                            <option value="ai">Artificial Intelligence</option>
+                            <option value="ml">Machine Learning</option>
+                            <option value="iot">IoT</option>
+                            <option value="others">Others</option>
+                        </select>
+                    </div>
+                    <input type="submit" value="Signup" class="btn btn-primary">
+                </form>
             </div>
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" placeholder="Enter password" name="pass">
-            </div>
-            <div class="form-group">
-                <label for="confirm-password">Confirm Password</label>
-                <input type="password" class="form-control" id="confirm-password" placeholder="Confirm password"
-                    text="center" name="cpass">
-            </div>
-            <div class="form-group">
-                <label for="topic">Topic of Interest</label>
-                <select class="form-control" id="topic" name="toi">
-                    <option value="ai">Artificial Intelligence</option>
-                    <option value="ml">Machine Learning</option>
-                    <option value="iot">IoT</option>
-                    <option value="others">Others</option>
-                </select>
-            </div>
-            <input type="submit" value="Signup" class="btn btn-primary">
-        </form>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
-    <script>
-        function cmp() {
-            let p = document.getElementById("password")
-            let c = document.getElementById("comfirm-password")
-            if(p.value == c.value){
-                return true;
-            }
-            else{
-                alert('Confirm Password not matched')
-                return false;
-            }
-        }
-
-    </script>
+            <script>
+                function cmp() {
+                    let p = document.getElementById("password").value
+                    let c = document.getElementById("confirm-password").value
+                    if (p !== c) {
+                        alert('Confirm Password not matched')
+                        return false;
+                    }
+                    else if (p === c) {
+                        if (p.length < 8) {
+                            alert("Password Must Have More Than 8 Character!")
+                            return false;
+                        }
+                        else
+                        return true;
+                    }
+                }
+            </script>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+                crossorigin="anonymous"></script>
 </body>
 
 </html>

@@ -57,8 +57,6 @@ app.get('/home', isAuthenticated, async (req, res) => {
     try {
         const posts = await Post.find();
         const ques = await Question.find(); // Assuming questions are not user-specific
-        const d = new Date();
-        console.log(`User Entered At: ${d.toLocaleDateString()}-${d.toLocaleTimeString()}`);
         res.render('home', { r: posts, q: ques });
     } catch (error) {
         console.error('Error fetching posts:', error);
@@ -81,7 +79,7 @@ app.get('/about', (req, res) => {
 app.get('/posts', isAuthenticated, async (req, res) => {
     try {
         const posts = await Post.find({ user: req.session.user.id }) // Get posts for the logged-in user
-        res.render('posts', { r:posts });
+        res.render('posts', { r: posts });
     } catch (error) {
         console.error('Error fetching user posts:', error);
         res.status(500).send("Server Error");
@@ -112,17 +110,25 @@ app.get('/comments', isAuthenticated, async (req, res) => {
             .populate('post', 'title')  // Populate post titles
             .populate('user', 'uname'); // Populate usernames who commented
 
-        const answers = await Answer.find({question:{$in:quesIds}})
-        .populate('question','topic')
-        .populate('user','uname')
-        res.render('comments', { com: comments,ans:answers });
+        const answers = await Answer.find({ question: { $in: quesIds } })
+            .populate('question', 'topic')
+            .populate('user', 'uname')
+        res.render('comments', { com: comments, ans: answers });
     } catch (error) {
         console.error('Error fetching comments:', error);
         res.status(500).send("Server Error");
     }
 });
 
-
+app.get('/questions',async(req,res)=>{
+    try {
+        const ques = await Question.find();
+        res.render('questions',{q:ques})
+    } catch (error) {
+        console.error('Error fetching Questions:', error);
+        res.status(500).send("Server Error");
+    }
+})
 
 
 // Post Routes
@@ -151,7 +157,8 @@ app.post('/sign', async (req, res) => {
         res.redirect('/home');
     } catch (error) {
         console.error('Error during signup:', error);
-        res.status(400).send("An Error Occurred");
+        req.session.msg = 'Email Already Exists';
+        res.status(400).redirect('/signup')
     }
 });
 
@@ -199,7 +206,7 @@ app.post('/upload', isAuthenticated, upload.single('image'), async (req, res) =>
             desc,
             contentType: req.file.mimetype,
             user: userId,
-            uname : req.session.user.uname // Reference the user who created the post
+            uname: req.session.user.uname // Reference the user who created the post
         });
 
         await post.save();
@@ -216,8 +223,8 @@ app.post('/question', isAuthenticated, async (req, res) => {
         const ques = new Question({
             topic: req.body.topic,
             question: req.body.question,
-            user:req.session.user.id,
-            uname:req.session.user.uname
+            user: req.session.user.id,
+            uname: req.session.user.uname
         });
         await ques.save();
         req.session.msg = 'Question uploaded successfully';
@@ -265,6 +272,89 @@ app.post('/ans', isAuthenticated, async (req, res) => {
         res.status(400).send("An Error Occurred");
     }
 });
+
+app.get('/edit/:id', async (req, res) => {
+    try {
+        result = await Post.findById(req.params.id);
+        res.render('edit', { r: result })
+    } catch (error) {
+        console.error('Error Editing Post:', error);
+        res.status(400).send("An Error Occurred");
+    }
+})
+app.get('/editq/:id', async (req, res) => {
+    try {
+        result = await Question.findById(req.params.id);
+        res.render('editq', { q: result })
+    } catch (error) {
+        console.error('Error Editing Post:', error);
+        res.status(400).send("An Error Occurred");
+    }
+})
+
+app.post('/upload/:id', upload.single('image'), async (req, res) => {
+    if (!req.file) {
+        req.session.msg = "No file uploaded";
+        return res.redirect('/home');
+    }
+
+    const image = req.file.buffer;
+    const title = req.body.title;
+    const desc = req.body.desc;
+    const userId = req.session.user.id;
+    try {
+        const updatePost = await Post.findByIdAndUpdate(req.params.id, {
+            title,
+            img: image,
+            desc,
+            contentType: req.file.mimetype,
+            user: userId,
+            uname: req.session.user.uname
+        });
+
+        req.session.msg = 'Post Edited successfully';
+        res.redirect('/home');
+    } catch (error) {
+        console.error('Error Editing Post:', error);
+        res.status(400).send("An Error Occurred");
+    }
+})
+app.post('/question/:id', isAuthenticated, async (req, res) => {
+    try {
+        const updateQuestion = await Question.findByIdAndUpdate(req.params.id,{
+            topic: req.body.topic,
+            question: req.body.question,
+            user: req.session.user.id,
+            uname: req.session.user.uname
+        })
+        req.session.msg = 'Question Edited successfully';
+        res.redirect('/home');
+    } catch (error) {
+        console.error('Error uploading question:', error);
+        res.status(400).send("An Error Occurred");
+    }
+});
+
+app.get('/delete/:id',async(req,res)=>{
+    try {
+        await Post.findByIdAndDelete(req.params.id);
+        req.session.msg = 'Post Deleted successfully';
+        res.redirect('/home');
+    } catch (error) {
+        console.error('Error Deleting Post:', error);
+        res.status(400).send("An Error Occurred");
+    }
+})
+app.get('/deleteq/:id',async(req,res)=>{
+    try {
+        await Question.findByIdAndDelete(req.params.id);
+        req.session.msg = 'Question Deleted successfully';
+        res.redirect('/home');
+    } catch (error) {
+        console.error('Error Deleting Post:', error);
+        res.status(400).send("An Error Occurred");
+    }
+})
 
 app.get('/logout', (req, res) => {
     req.session.destroy(err => {
