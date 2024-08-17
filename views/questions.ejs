@@ -11,7 +11,13 @@
     <body>
         <h2>Your Questions Will Be Displayed Here</h2>
         <% for( let i=0; i < q.length; i++ ) { %>
-            <div class="card" style="width: 18rem;">
+            <div class="card mb-3 my-4" style="width: 18rem;">
+              <span class="badge text-bg-primary  my-2 mb-2">Posted At:
+                <%= q[i].createdAt  %>
+              </span>
+              <span class="badge text-bg-primary  my-2 mb-2">Edited At:
+                <%= q[i].updatedAt  %>
+              </span>
               <h5 class="card-title">@<%= q[i].uname  %></h5>
               <div class="card-body">
                 <h5 class="card-title">

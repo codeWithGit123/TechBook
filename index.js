@@ -122,7 +122,7 @@ app.get('/comments', isAuthenticated, async (req, res) => {
 
 app.get('/questions',async(req,res)=>{
     try {
-        const ques = await Question.find();
+        const ques = await Question.find({user:req.session.user.id});
         res.render('questions',{q:ques})
     } catch (error) {
         console.error('Error fetching Questions:', error);
@@ -303,7 +303,7 @@ app.post('/upload/:id', upload.single('image'), async (req, res) => {
     const desc = req.body.desc;
     const userId = req.session.user.id;
     try {
-        const updatePost = await Post.findByIdAndUpdate(req.params.id, {
+        await Post.findByIdAndUpdate(req.params.id, {
             title,
             img: image,
             desc,
@@ -321,7 +321,7 @@ app.post('/upload/:id', upload.single('image'), async (req, res) => {
 })
 app.post('/question/:id', isAuthenticated, async (req, res) => {
     try {
-        const updateQuestion = await Question.findByIdAndUpdate(req.params.id,{
+        await Question.findByIdAndUpdate(req.params.id,{
             topic: req.body.topic,
             question: req.body.question,
             user: req.session.user.id,
