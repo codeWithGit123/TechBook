@@ -193,7 +193,6 @@ app.post('/upload', isAuthenticated, upload.single('image'), async (req, res) =>
         req.session.msg = "No file uploaded";
         return res.redirect('/home');
     }
-
     const image = req.file.buffer;
     const title = req.body.title;
     const desc = req.body.desc;
