@@ -14,40 +14,71 @@
 
   <% if (r && r.length> 0) { %> <!-- Check if r is defined and has elements -->
     <% for (let i=0; i < r.length; i++) { %>
-      <div class="card mb-3 my-4" style="width: 18rem;">
-        <span class="badge text-bg-primary  my-2 mb-2">Posted At:
-          <%= r[i].createdAt  %>
-        </span>
-        <span class="badge text-bg-primary  my-2 mb-2">Edited At:
-          <%= r[i].updatedAt  %>
-        </span>
-        <img src="data:<%= r[i].contentType %>;base64,<%= r[i].img.toString(
-        'base64' ) %>" alt="An Image" />
-        <div class="card-body">
-          <h5 class="card-title">
-            <%= r[i].title %>
-          </h5>
-          <p class="card-text">
-            <%= r[i].desc %>
-          </p>
-        </div>
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col">
-              <a href="/edit/<%=r[i]._id%>"><button class="btn btn-primary">Edit</button></a>
-            </div>
-            <div class="col">
-              <a href="/delete/<%=r[i]._id%>"><button class="btn btn-danger">Delte</button></a>
+      <% if (r[i].contentType=='video/mp4' ) { %>
+        <div class="card mb-3 my-4" style="width: 18rem;">
+          <span class="badge text-bg-primary  my-2 mb-2">Posted At:
+            <%= r[i].createdAt %>
+          </span>
+          <span class="badge text-bg-primary  my-2 mb-2">Edited At:
+            <%= r[i].updatedAt %>
+          </span>
+          <video src="data:<%= r[i].contentType %>;base64,<%= r[i].img.toString(
+            'base64' ) %>" controls>
+                      Your Browser Does not support videos.</video>
+          <div class="card-body">
+            <h5 class="card-title">
+              <%= r[i].title %>
+            </h5>
+            <p class="card-text">
+              <%= r[i].desc %>
+            </p>
+          </div>
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col">
+                <a href="/edit/<%=r[i]._id%>"><button class="btn btn-primary">Edit</button></a>
+              </div>
+              <div class="col">
+                <a href="/delete/<%=r[i]._id%>"><button class="btn btn-danger">Delte</button></a>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-
-      <% } %>
-        <% } else { %>
-          <h3>No Posts</h3>
+        <% }else{ %>
+          <div class="card mb-3 my-4" style="width: 18rem;">
+            <span class="badge text-bg-primary  my-2 mb-2">Posted At:
+              <%= r[i].createdAt %>
+            </span>
+            <span class="badge text-bg-primary  my-2 mb-2">Edited At:
+              <%= r[i].updatedAt %>
+            </span>
+            <img src="data:<%= r[i].contentType %>;base64,<%= r[i].img.toString(
+        'base64' ) %>" alt="An Image" />
+            <div class="card-body">
+              <h5 class="card-title">
+                <%= r[i].title %>
+              </h5>
+              <p class="card-text">
+                <%= r[i].desc %>
+              </p>
+            </div>
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col">
+                  <a href="/edit/<%=r[i]._id%>"><button class="btn btn-primary">Edit</button></a>
+                </div>
+                <div class="col">
+                  <a href="/delete/<%=r[i]._id%>"><button class="btn btn-danger">Delte</button></a>
+                </div>
+              </div>
+            </div>
+          </div>
           <% } %>
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+          <%}%>
+            <% } else { %>
+              <h3>No Posts</h3>
+              <% } %>
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

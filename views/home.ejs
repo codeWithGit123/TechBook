@@ -76,6 +76,9 @@
                 <a class="nav-link active" aria-current="page" href="/comments">Your Comments</a>
               </li>
               <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/pdfs">Your Pdfs</a>
+              </li>
+              <li class="nav-item">
                 <a class="nav-link active" aria-current="page" href="/logout">Logout</a>
               </li>
             </ul>
@@ -116,10 +119,15 @@
               <div class="btn btn-primary">Ask A Question</div>
             </a>
           </div>
+          <div class="col">
+            <a href="/postpdf">
+              <div class="btn btn-primary">Upload A PDF</div>
+            </a>
+          </div>
         </div>
       </div>
       <div class="container-fluid">
-        <% if (r.length>0 || q.length>0) { %>
+        <% if (r.length>0 || q.length>0 || ps.length>0) { %>
           <h2>Others Posts And Questions</h2>
           <% for( let i=0; i < r.length; i++ ) { %>
             <% if (r[i].contentType=='video/mp4' ) { %>
@@ -169,28 +177,46 @@
                 </div>
                 <%}%>
                   <% } %>
-                    <% for( let i=0; i < q.length; i++ ) { %>
+                    <% for( let i=0; i < ps.length; i++ ) { %>
                       <div class="card" style="width: 18rem;">
-                        <h5 class="card-title">@<%= q[i].uname %>
-                        </h5>
-                        <div class="card-body">
-                          <h5 class="card-title">
-                            <%= q[i].topic %>
-                          </h5>
-                          <p class="card-text">
-                            <%= q[i].question %>
-                          </p>
-                          <form action="/ans" method="post">
-                            <input type="hidden" name="quesId" value="<%= q[i]._id %>" />
-                            <div class="form-group">
-                              <input type="text" class="form-control" placeholder="Give Answer..." name="answer">
+                        <h5 class="card-title">@<%= ps[i].uname %>
+                            <div>
+                              <a href="/pdf/<%= ps[i]._id  %>" target="_blank">
+                                <img src="/images/pdf_img.jpeg" alt="An PDF" />
+                              </a>
+                              <form action="/com" method="post">
+                                <input type="hidden" name="postId" value="<%= ps[i]._id %>" />
+                                <div class="form-group">
+                                  <input type="text" class="form-control" placeholder="Comment Something..."
+                                    name="comment">
+                                </div>
+                                <input type="submit" class="btn btn-primary" value="Comment">
+                              </form>
                             </div>
-                            <input type="submit" class="btn btn-primary" value="Send">
-                          </form>
-                        </div>
                       </div>
                       <% } %>
-                        <% } %>
+                        <% for( let i=0; i < q.length; i++ ) { %>
+                          <div class="card" style="width: 18rem;">
+                            <h5 class="card-title">@<%= q[i].uname %>
+                            </h5>
+                            <div class="card-body">
+                              <h5 class="card-title">
+                                <%= q[i].topic %>
+                              </h5>
+                              <p class="card-text">
+                                <%= q[i].question %>
+                              </p>
+                              <form action="/ans" method="post">
+                                <input type="hidden" name="quesId" value="<%= q[i]._id %>" />
+                                <div class="form-group">
+                                  <input type="text" class="form-control" placeholder="Give Answer..." name="answer">
+                                </div>
+                                <input type="submit" class="btn btn-primary" value="Send">
+                              </form>
+                            </div>
+                          </div>
+                          <% } %>
+                            <% } %>
       </div>
       <div class="container my-5" style="text-decoration: none;">
         <!-- Footer -->
@@ -301,5 +327,4 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
 </body>
-
 </html>

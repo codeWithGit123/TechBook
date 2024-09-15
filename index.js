@@ -8,6 +8,7 @@ const Post = require('./models/post')
 const Comment = require('./models/comment')
 const Question = require('./models/ques')
 const Answer = require('./models/ans')
+const Pdf = require('./models/pdf')
 require('dotenv').config()
 
 mongoose.connect(process.env.MONGO_DB_URI)
@@ -56,8 +57,9 @@ app.get('/', (req, res) => {
 app.get('/home', isAuthenticated, async (req, res) => {
     try {
         const posts = await Post.find();
-        const ques = await Question.find(); // Assuming questions are not user-specific
-        res.render('home', { r: posts, q: ques });
+        const ques = await Question.find();
+        const pdfs = await Pdf.find(); // Assuming questions are not user-specific
+        res.render('home', { r: posts, q: ques ,ps:pdfs});
     } catch (error) {
         console.error('Error fetching posts:', error);
         res.status(500).send("Server Error");
@@ -75,6 +77,15 @@ app.get('/signup', (req, res) => {
 app.get('/about', (req, res) => {
     res.render('about');
 });
+app.get('/pdfs',async(req,res)=>{
+    try {
+        const posts = await Pdf.find({ user: req.session.user.id }) // Get posts for the logged-in user
+        res.render('pdfs', { ps: posts });
+    } catch (error) {
+        console.error('Error fetching user posts:', error);
+        res.status(500).send("Server Error");
+    }
+})
 
 app.get('/posts', isAuthenticated, async (req, res) => {
     try {
@@ -130,7 +141,13 @@ app.get('/questions',async(req,res)=>{
     }
 })
 
-
+app.get('/pdf/:id',async(req,res)=>{
+    const result = await Pdf.findById(req.params.id);
+    res.render('pdf',{r:result});
+})
+app.get('/postpdf',(req,res)=>{
+    res.render('postpdf')
+})
 // Post Routes
 app.post('/sign', async (req, res) => {
     const { uname, email, pass, toi } = req.body;
@@ -188,7 +205,31 @@ app.post('/log', async (req, res) => {
 });
 
 
-app.post('/upload', isAuthenticated, upload.single('image'), async (req, res) => {
+app.post('/ppdf', isAuthenticated, upload.single('file'), async (req, res) => {
+    if (!req.file) {
+        req.session.msg = "No file uploaded";
+        return res.redirect('/home');
+    }
+    const file = req.file.buffer;
+    const userId = req.session.user.id;
+
+    try {
+        const post = new Pdf({
+            pdf:file,
+            contentType: req.file.mimetype,
+            user: userId,
+            uname: req.session.user.uname // Reference the user who created the post
+        });
+
+        await post.save();
+        req.session.msg = 'Post uploaded successfully';
+        res.redirect('/home');
+    } catch (error) {
+        console.error('Error uploading post:', error);
+        res.status(400).send("An Error Occurred");
+    }
+});
+app.post('/upload', isAuthenticated, upload.single('file'), async (req, res) => {
     if (!req.file) {
         req.session.msg = "No file uploaded";
         return res.redirect('/home');
@@ -348,6 +389,16 @@ app.get('/deleteq/:id',async(req,res)=>{
     try {
         await Question.findByIdAndDelete(req.params.id);
         req.session.msg = 'Question Deleted successfully';
+        res.redirect('/home');
+    } catch (error) {
+        console.error('Error Deleting Post:', error);
+        res.status(400).send("An Error Occurred");
+    }
+})
+app.get('/deletep/:id',async(req,res)=>{
+    try {
+        await Pdf.findByIdAndDelete(req.params.id);
+        req.session.msg = 'PDF Deleted Successfully';
         res.redirect('/home');
     } catch (error) {
         console.error('Error Deleting Post:', error);
