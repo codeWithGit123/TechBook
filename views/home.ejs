@@ -55,12 +55,15 @@
                   Different Technologies
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <li><a class="dropdown-item" href="https://chatgpt.com/share/0da1ae2e-1b42-4ea8-94b7-7679fa5ff322" target="_blank">Robotics</a></li>
-                  <li><a class="dropdown-item" href="https://chatgpt.com/share/3b054f5c-fe53-4626-8727-e50ec77efe62" target="_blank">DevOps</a></li>
+                  <li><a class="dropdown-item" href="https://chatgpt.com/share/0da1ae2e-1b42-4ea8-94b7-7679fa5ff322"
+                      target="_blank">Robotics</a></li>
+                  <li><a class="dropdown-item" href="https://chatgpt.com/share/3b054f5c-fe53-4626-8727-e50ec77efe62"
+                      target="_blank">DevOps</a></li>
                   <li>
                     <hr class="dropdown-divider">
                   </li>
-                  <li><a class="dropdown-item" href="https://chatgpt.com/share/9a23f44e-e918-467a-941c-eea175fdd207" target="_blank">Block chain</a></li>
+                  <li><a class="dropdown-item" href="https://chatgpt.com/share/9a23f44e-e918-467a-941c-eea175fdd207"
+                      target="_blank">Block chain</a></li>
                 </ul>
               </li>
               <li class="nav-item">
@@ -119,48 +122,75 @@
         <% if (r && r.length>0) { %>
           <h2>Others Posts And Questions</h2>
           <% for( let i=0; i < r.length; i++ ) { %>
-            <div class="card" style="width: 18rem;">
-              <h5 class="card-title">@<%= r[i].uname  %></h5>
-              <img src="data:<%= r[i].contentType %>;base64,<%= r[i].img.toString(
-        'base64' ) %>" alt="An Image" />
-              <div class="card-body">
-                <h5 class="card-title">
-                  <%= r[i].title %>
+            <% if (r[i].contentType=='video/mp4' ) { %>
+              <div class="card" style="width: 18rem;">
+                <h5 class="card-title">@<%= r[i].uname %>
                 </h5>
-                <p class="card-text">
-                  <%= r[i].desc %>
-                </p>
-                <form action="/com" method="post">
-                  <input type="hidden" name="postId" value="<%= r[i]._id %>"/>
-                  <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Comment Something..." name="comment">
-                  </div>
-                  <input type="submit" class="btn btn-primary" value="Comment">
-                </form>
+                <video src="data:<%= r[i].contentType %>;base64,<%= r[i].img.toString(
+        'base64' ) %>" controls>
+                  Your Browser Does not support videos.</video>
+                <div class="card-body">
+                  <h5 class="card-title">
+                    <%= r[i].title %>
+                  </h5>
+                  <p class="card-text">
+                    <%= r[i].desc %>
+                  </p>
+                  <form action="/com" method="post">
+                    <input type="hidden" name="postId" value="<%= r[i]._id %>" />
+                    <div class="form-group">
+                      <input type="text" class="form-control" placeholder="Comment Something..." name="comment">
+                    </div>
+                    <input type="submit" class="btn btn-primary" value="Comment">
+                  </form>
+                </div>
               </div>
-            </div>
-            <% } %>
-              <% for( let i=0; i < q.length; i++ ) { %>
+              <% }else{ %>
                 <div class="card" style="width: 18rem;">
-                  <h5 class="card-title">@<%= q[i].uname  %></h5>
+                  <h5 class="card-title">@<%= r[i].uname %>
+                  </h5>
+                  <img src="data:<%= r[i].contentType %>;base64,<%= r[i].img.toString(
+        'base64' ) %>" alt="An Image" />
                   <div class="card-body">
                     <h5 class="card-title">
-                      <%= q[i].topic %>
+                      <%= r[i].title %>
                     </h5>
                     <p class="card-text">
-                      <%= q[i].question %>
+                      <%= r[i].desc %>
                     </p>
-                    <form action="/ans" method="post">
-                      <input type="hidden" name="quesId" value="<%= q[i]._id %>"/>
+                    <form action="/com" method="post">
+                      <input type="hidden" name="postId" value="<%= r[i]._id %>" />
                       <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Give Answer..." name="answer">
+                        <input type="text" class="form-control" placeholder="Comment Something..." name="comment">
                       </div>
-                      <input type="submit" class="btn btn-primary" value="Send">
+                      <input type="submit" class="btn btn-primary" value="Comment">
                     </form>
                   </div>
                 </div>
-                <% } %>
+                <%}%>
                   <% } %>
+                    <% for( let i=0; i < q.length; i++ ) { %>
+                      <div class="card" style="width: 18rem;">
+                        <h5 class="card-title">@<%= q[i].uname %>
+                        </h5>
+                        <div class="card-body">
+                          <h5 class="card-title">
+                            <%= q[i].topic %>
+                          </h5>
+                          <p class="card-text">
+                            <%= q[i].question %>
+                          </p>
+                          <form action="/ans" method="post">
+                            <input type="hidden" name="quesId" value="<%= q[i]._id %>" />
+                            <div class="form-group">
+                              <input type="text" class="form-control" placeholder="Give Answer..." name="answer">
+                            </div>
+                            <input type="submit" class="btn btn-primary" value="Send">
+                          </form>
+                        </div>
+                      </div>
+                      <% } %>
+                        <% } %>
       </div>
       <div class="container my-5" style="text-decoration: none;">
         <!-- Footer -->
